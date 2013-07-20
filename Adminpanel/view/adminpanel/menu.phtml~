@@ -1,0 +1,6 @@
+<h3>Меню</h3>
+<ol>
+	<?php foreach($this->links as $link){ ?>
+	
+	<?php } ?>
+</ol>

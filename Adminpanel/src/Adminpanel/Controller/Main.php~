@@ -1,7 +1,18 @@
 <?php
 namespace Adminpanel\Controller;
 
-class MainController extends \Zend\Mvc\Controller\AbstractActionController{
-	
+class Main extends Controller{
+	protected function getMenu(){
+		return array(
+			(object)array(
+				'href'=>$this->url()->fromRoute('adminpanel/seg',array('controller'=>'main','action'=>'edit-template')),
+				'title'=>'Редактировать гланый шаблон страницы'
+			),
+			(object)array(
+				'href'=>$this->url()->fromRoute('adminpanel/seg',array('controller'=>'block')),
+				'title'=>'Редактировать гланый шаблон страницы'
+			),
+		);
+	}
 }
 ?>

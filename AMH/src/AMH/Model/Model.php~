@@ -6,15 +6,21 @@ class Model{
 	const FIELD_SET_ONLYINCONSTRUCTOR=0002;
 	const FIELD_SET_ANYWHERE=0003;
 	
-
 	private $fields=array();
 	
+	protected function preConstruct(){}
+	
 	public function __construct(array $fields){
-		foreach($fields as $field=>$val){
+		$this->preConstruct();
+		foreach($this->fields as $field=>$val){
 			if(isset($this->fields[$field])){
-				$this->fields[$fieled]=$val);
+				$this->fields[$fieled]=$val;
 			}
 		}
+	}
+	
+	public function getFieldNames(){
+		return array_keys($this->fields);
 	}
 	
 	private function addField(array $options){
@@ -73,16 +79,26 @@ class Model{
 			return null;
 		}
 		
-		if(($this->fields[$name]->set==self::FIELD_SET_ONLYONCE||$this->fields[$name]->set==self::FIELD_SET_ONLYINCONSTRUCTOR)&&$this->fields[$name]->value!==null){
+		if($this->fields[$name]->set==self::FIELD_SET_ONLYINCONSTRUCTOR){
+			throw new \Exception('Cannot set '.__CLASS__.'.'.$name.', premission denied');
+			return null;
+		}
+		
+		if($this->fields[$name]->set==self::FIELD_SET_ONLYONCE&&$this->fields[$name]->value!==null){
 			throw new \Exception('Cannot set '.__CLASS__.'.'.$name.', premission denied');
 			return null;
 		}
 		
 		if($this->fields[$name]->type!==TRUE){
-			if(!($val instanceof $this->fields[$name]->type)){
-				throw new \Exception('Cannot set '.__CLASS__.'.'.$name.' to '.$val.', value must be an instance of '.$this->fields[$name]->type);
-				return null;
-			}
+			if(is_class($val))
+				if(!($val instanceof $this->fields[$name]->type)){
+					throw new \Exception('Cannot set '.__CLASS__.'.'.$name.' to '.$val.', value must be an instance of '.$this->fields[$name]->type);
+					return null;
+				}
+			else
+				if(gettype($val)!=$this->fields[$name]->type){
+					
+				}
 		}
 		
 		if($this->fields[$name]->setCallback){

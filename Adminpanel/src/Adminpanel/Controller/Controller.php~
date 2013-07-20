@@ -1,0 +1,35 @@
+<?php
+namespace Adminpanel\Controller;
+
+use \Zend\View\Model\ViewModel as View;
+
+abstract class Controller extends \Zend\Mvc\Controller\AbstractActionController{
+	protected $name='AbstractAdminpanelController';
+	
+	abstract protected function getMenu();
+	
+	public function getName(){
+		return $this->name;
+	}
+	
+	public function menuAction(){
+		$view=new View(array('links'=>$this->getMenu()));
+		$view->setTemplate('adminpanel/menu');
+		return $view;
+	}
+	
+	public function dispatch(\Zend\Stdlib\RequestInterface $request, \Zend\Stdlib\ResponseInterface $response = NULL){
+		$res=parent::dispatch($request,$response);
+		if($res instanceof View){
+			$layout=new View(array('navi'=>'<ZAGLUSHKA !!!!>','name'=>$this->name));
+			$layout->setTemplate('adminpanel/layout');
+			$layout->addChild($res,'content');
+			$res=$layout;
+		}
+		
+		$this->getEvent()->setResult($res);
+		
+		return $res;
+	}
+}
+?>

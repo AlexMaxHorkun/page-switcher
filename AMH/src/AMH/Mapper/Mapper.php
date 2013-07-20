@@ -9,7 +9,7 @@ abstract class Mapper{
 	protected $pdo;
 	private $options=array(
 		'getArrayOnly'=>TRUE,
-		'fieldsMap'=>array(),
+		'fieldsMap'=>array(),//ключи - название колонок, значения - названия ствойств
 		'storeLastReceived'=>FALSE,
 	);
 	private $lastUsedFilter=null;
@@ -135,10 +135,6 @@ abstract class Mapper{
 			return null;
 		}
 		
-		if(!$this->callbacks[$action.'Query']){
-			throw new \Exception($action.'Query callback isn\'t given to '.__CLASS__);
-			return FALSE;
-		}
 		try{
 			$method='db'.$action;
 			$res=$this->$method();
@@ -153,6 +149,9 @@ abstract class Mapper{
 			}
 		}
 		
+		if($action=='Insert'){
+			return $this->pdo->getLastInsertId();
+		}
 		return TRUE;
 	}
 }

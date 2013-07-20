@@ -1,20 +1,21 @@
 <?php
 namespace Adminpanel\Mapper;
 
-class Block extends \AMH\Mapper\Mapper{
+class tatistic extends \AMH\Mapper\Mapper{
 	public function __construct(\PDO $pdo){
 		$this->reqTables=array(
-			'create table blocks(
-				id int not null auto_increment primary key,
-				name text not null,
-				unique(name(50))
+			'create table  stat(
+				page_id int not null,
+				ip char(45) not null,
+				date date not null,
+				time time not null
 			)engine=myisam default charset=utf8'.
 		);
 		parent::__construct($pdo);
 	}
 	
 	protected function dbSelect($filter){
-		$query='select * from blocks';
+		$query='select * from stat';
 		if(count($filter)){
 			$where='';
 			foreach($filter as $col=>$val){
@@ -40,20 +41,20 @@ class Block extends \AMH\Mapper\Mapper{
 	}
 	
 	protected function dbInsert($item){
-		$sth=$this->pdo->prepare('insert into blocks values (null,?)');
-		$sth->bindParam(1,$item->name);
+		$sth=$this->pdo->prepare('insert into stat values (?,?,?,?)');
+		$sth->bindParam(1,$item->page_id);
+		$sth->bindParam(2,$item->ip);
+		$sth->bindParam(3,$item->date);
+		$sth->bindParam(4,$item->time);
 		return $sth->execute();
 	}
 	
 	protected function dbSave($item){
-		$sth=$this->pdo->prepare('update blocks set name=? where id=?');
-		$sth->bindValue(1,$item->name);
-		$sth->bindValue(2,$item->id);
-		return $sth->execute();
+		return null;
 	}
 	
 	protected function dbDelete($item){
-		return $this->pdo->query('delete from blocks where id='.$item->id);
+		$sth=$this->pdo->query('delete from stat where id='.$item->id);
 	}
 }
 ?>

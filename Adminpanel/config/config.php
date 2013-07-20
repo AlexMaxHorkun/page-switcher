@@ -2,7 +2,7 @@
 return array(
 	'controllers'=>array(
 		'invokables'=>array(
-			'Adminpanel\Controller\Main'=>'Adminpanel\Controller\MainController'
+			'Adminpanel\Controller\Main'=>'Adminpanel\Controller\Main'
 		),
 	),
 	
