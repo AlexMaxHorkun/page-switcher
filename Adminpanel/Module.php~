@@ -1,0 +1,23 @@
+<?php
+namespace Adminpanel;
+
+class Module{
+	function init($mm){
+	
+	}
+	
+	function getConfig(){
+		return include __DIR__.'/config/config.php';
+	}
+	
+	function getServiceConfig(){
+		return array();
+	}
+	
+	function getAutoloaderConfig(){
+		return array(
+			
+		);
+	}
+}
+?>

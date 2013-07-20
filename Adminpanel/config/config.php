@@ -1,0 +1,43 @@
+<?php
+return array(
+	'controllers'=>array(
+		'invokables'=>array(
+			'Adminpanel\Controller\Main'=>'Adminpanel\Controller\MainController'
+		),
+	),
+	
+	'router'=>array(
+		'routes'=>array(
+			'adminpanel'=>array(
+				'type'=>'Segment',
+				'options'=>array(
+					'route'=>'/adminpanel[/]',
+					'defaults'=>array(
+						'controller'=>'Adminpanel\Controller\Main',
+						'action'=>'menu',
+					),
+				),
+				'may_terminate'=>TRUE,
+				'child_routes'=>array(
+					'seg'=>array(
+						'type'=>'segment',
+						'options'=>array(
+							'route'=>':controller[/][:action][:id]',
+							'defaults'=>array(
+								'__NAMESPACE__'=>'Adminpanel\Controller',
+								'action'=>'menu',
+							),
+						),
+					),
+				),
+			),
+		),
+	),
+	
+	'view_manager'=>array(
+		'template_path_stack'=>array(
+			'adminpanel'=>__DIR__.'/../view',
+		),
+	),
+);
+?>
