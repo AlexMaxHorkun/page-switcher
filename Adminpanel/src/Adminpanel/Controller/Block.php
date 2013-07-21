@@ -37,9 +37,9 @@ class Block extends ModelController{
 	protected function getColumnTemplates(){
 		return array(
 			'"{:name}"',
-			'<a href="'.$this->url()->fromRoute('adminpanel/seg',array('controller'=>'block','action'=>'edit')).'{:id}">Изменить</a> 
+			'<a href="'.$this->url()->fromRoute('adminpanel/seg',array('controller'=>'block','action'=>'edit')).'/{:id}">Изменить</a> 
 			&nbsp; 
-			<a href="'.$this->url()->fromRoute('adminpanel/seg',array('controller'=>'block','action'=>'delete')).'{:id}">Удалить</a>',
+			<a href="'.$this->url()->fromRoute('adminpanel/seg',array('controller'=>'block','action'=>'delete')).'/{:id}">Удалить</a>',
 		);
 	}
 	

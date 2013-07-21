@@ -53,7 +53,7 @@ abstract class ModelController extends \Zend\Mvc\Controller\AbstractActionContro
 			return null;
 		}
 		
-		$form->bind($this->request->getPost());
+		$form->bind($this->request->getPost());		
 		return $form->isValid();
 	}
 	
@@ -137,6 +137,9 @@ abstract class ModelController extends \Zend\Mvc\Controller\AbstractActionContro
 	
 	public function deleteAction(){
 		$model=$this->getModel();
+		if(!$model){
+			return $this->invalidModelRequested();
+		}
 		$sucUrl=$this->getSuccessUrl('delete');
 		$successMes=null;
 		$errorMes=null;

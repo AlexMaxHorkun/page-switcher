@@ -42,13 +42,13 @@ class Block extends \AMH\Mapper\Mapper{
 	}
 	
 	protected function dbInsert($item){
+		print_r($item); die();
 		$sth=$this->pdo->prepare('insert into blocks values (null,?)');
 		$sth->bindValue(1,$item->name);
 		return $sth->execute();
 	}
 	
 	protected function dbSave($item){
-		print_r($item);
 		$sth=$this->pdo->prepare('update blocks set name=? where id=?');
 		$sth->bindValue(1,$item->name);
 		$sth->bindValue(2,$item->id);

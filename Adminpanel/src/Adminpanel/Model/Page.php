@@ -9,5 +9,9 @@ class Page extends AMHModel{
 		$this->addField(array('name'=>'name','set'=>AMHModel::FIELD_SET_ONLYINCONSTRUCTOR,'type'=>'string'));
 		$this->addField(array('name'=>'route','set'=>AMHModel::FIELD_SET_ONLYINCONSTRUCTOR,'type'=>'string'));
 	}
+	
+	public function __toString(){
+		return $this->name;
+	}
 }
 ?>

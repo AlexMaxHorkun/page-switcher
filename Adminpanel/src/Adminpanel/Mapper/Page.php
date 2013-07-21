@@ -2,16 +2,16 @@
 namespace Adminpanel\Mapper;
 
 class Page extends \AMH\Mapper\Mapper{
-	public function __construct(\PDO $pdo){
+	public function __construct(\PDO $pdo,array $options=array()){
 		$this->reqTables=array(
-			'create table  pages(
+			'create table pages(
 				id int not null auto_increment primary key,
 				name text not null,
-				route text not null
+				route text not null,
 				unique(name(50),route(50))
-			)engine=myisam default charset=utf8'.
+			)engine=myisam default charset=utf8',
 		);
-		parent::__construct($pdo);
+		parent::__construct($pdo,$options);
 	}
 	
 	protected function dbSelect($filter){
@@ -33,17 +33,18 @@ class Page extends \AMH\Mapper\Mapper{
 			$sth=$this->pdo->prepare($query.$where);
 			$vals=array_values($filter);
 			foreach($vals as $ind=>$val){
-				$sth->bindParam($ind,$val);
+				$sth->bindValue($ind+1,$val);
 			}
-			return $sth->execute();
+			$sth->execute();
+			return $sth;
 		}
 		return $this->pdo->query($query);
 	}
 	
 	protected function dbInsert($item){
 		$sth=$this->pdo->prepare('insert into pages values (null,?,?)');
-		$sth->bindParam(1,$item->name);
-		$sth->bindParam(2,$item->route);
+		$sth->bindValue(1,$item->name);
+		$sth->bindValue(2,$item->route);
 		return $sth->execute();
 	}
 	
@@ -57,6 +58,10 @@ class Page extends \AMH\Mapper\Mapper{
 	
 	protected function dbDelete($item){
 		return $this->pdo->query('delete from pages where id='.$item->id);
+	}
+	
+	protected function fetch($row){
+		return new \Adminpanel\Model\Page((array)$row);
 	}
 }
 ?>

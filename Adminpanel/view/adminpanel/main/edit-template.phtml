@@ -10,8 +10,56 @@ $this->form->prepare();
 echo $this->form()->openTag($this->form);
 echo $this->formTextarea($this->form->get('text')); 
 ?>
+<?php if(count($this->blocks)) { ?>
 <br>
+Блок <select id="blocks">
+	<?php foreach($this->blocks as $block) { ?>
+	<option value="<?php echo $block->id; ?>"><?php echo $block; ?></option>
+	<?php } ?>
+</select>
+ &nbsp; 
+<input type="button" id="add-block" value="Добавить">
+<?php } ?>
+<br><br>
 <?php
 echo $this->formSubmit($this->form->get('submit'));
 echo $this->form()->closeTag();
 } ?>
+
+<script>
+	function getCaret(el) { 
+  if (el.selectionStart) { 
+    return el.selectionStart; 
+  } else if (document.selection) { 
+    el.focus(); 
+ 
+    var r = document.selection.createRange(); 
+    if (r == null) { 
+      return 0; 
+    } 
+ 
+    var re = el.createTextRange(), 
+        rc = re.duplicate(); 
+    re.moveToBookmark(r.getBookmark()); 
+    rc.setEndPoint('EndToStart', re); 
+ 
+    return rc.text.length; 
+  }  
+  return 0; 
+}
+
+	jQuery("input#add-block").click(function(){
+		var block={ 
+			id:jQuery("select#blocks").val(), 
+			name:jQuery("select#blocks option[value='"+jQuery("select#blocks").val()+"']").text() 
+		};
+		var	focusPos=getCaret(jQuery("textarea").get(0));
+		
+		var newText='<#php echo $this->block_'+block.id+';  /*Блок "'+block.name+'"*/ #>';
+		var text=jQuery("textarea").val();
+		newText=newText.replace('#','?');
+		newText=newText.replace('#','?');
+		newText=text.substr(0,focusPos)+newText+text.substr(focusPos)+'';
+		jQuery("textarea").val(newText);
+	});
+</script>

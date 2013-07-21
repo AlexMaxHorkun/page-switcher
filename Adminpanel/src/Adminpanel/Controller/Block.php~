@@ -24,7 +24,7 @@ class Block extends ModelController{
 	}
 	
 	protected function deleteProcess($model){
-		return (boolean)$this->getServiceLocator()->get('blockMapper')->delete($data);
+		return (boolean)$this->getServiceLocator()->get('blockMapper')->delete($model);
 	}
 
 	protected function getListColumns(){

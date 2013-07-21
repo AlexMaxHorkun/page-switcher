@@ -117,6 +117,68 @@ class Module{
 					$form->setLabel('Редактирование блока');
 					return $form;
 				},
+				'pageAddForm'=>function($sm){
+					$form=new \Zend\Form\Form('page-add-form');
+					$form->setLabel('Добавление страницы');
+					$form->add(array('name'=>'name','type'=>'text','options'=>array('label'=>'Название страницы')));
+					$form->add(array('name'=>'route','type'=>'text','options'=>array('label'=>'Путь к странице /')));
+					$form->add(array('name'=>'id','type'=>'hidden'));
+					
+					$blocks=$sm->get('blockMapper')->get();
+					if($blocks&&is_array($blocks)){
+						foreach($blocks as $block){
+							$form->add(array('name'=>'block_'.$block->id,'type'=>'textarea','options'=>array(
+								'label'=>'Блок "'.$block->name.'"',
+							)));
+						}
+					}
+					
+					$form->add(array('name'=>'submit','type'=>'submit','attributes'=>array('value'=>'Сохранить')));
+					
+					$filter=new \Zend\InputFilter\Factory;
+					$form->setInputFilter($filter->createInputFilter(array(
+						'name'=>array(
+							'name'=>'name',
+							'required'=>TRUE,
+							'validators'=>array(
+								array(
+									'name'=>'not_empty',
+								),
+								array(
+									'name'=>'string_length',
+									'options'=>array(
+										'min'=>2,
+									),
+								),
+								array(
+									'name'=>'regex',
+									'options'=>array(
+										'pattern'=>'"^[A-z0-9_-]+$"i',
+									),
+								),
+							),
+						),
+						'route'=>array(
+							'name'=>'route',
+							'required'=>FALSE,
+							'validators'=>array(
+								array(
+									'name'=>'regex',
+									'options'=>array(
+										'pattern'=>'"^[A-z0-9_-]*$"i',
+									),
+								),
+							),
+						),
+					)));
+					
+					return $form;
+				},
+				'pageEditForm'=>function($sm){
+					$form=$sm->get('pageAddForm');
+					$form->setLabel('Редактирование страницы');
+					return $form;
+				},
 			),
 		);
 	}

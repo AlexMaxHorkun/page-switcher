@@ -53,7 +53,7 @@ abstract class ModelController extends \Zend\Mvc\Controller\AbstractActionContro
 			return null;
 		}
 		
-		$form->bind($this->request->getPost());
+		$form->bind($this->request->getPost());		
 		return $form->isValid();
 	}
 	
@@ -155,7 +155,7 @@ abstract class ModelController extends \Zend\Mvc\Controller\AbstractActionContro
 					}
 		}
 		
-		$view=new View(array('model'=>$model,'suc'=>$suc,'sucUrl'=>$sucUrl,'err'=>$errorMes));
+		$view=new View(array('model'=>$model,'suc'=>$successMes,'sucUrl'=>$sucUrl,'err'=>$errorMes));
 		$view->setTemplate('adminpanel/model/delete');
 		return $view;
 	}

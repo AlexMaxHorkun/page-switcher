@@ -51,7 +51,7 @@ class IndexController extends AbstractController
 				foreach($blocks as $block){
 					$blockView=new View();
 					$blockView->setTemplate('pages/page_'.$this->page->id.'/block_'.$block->id);
-					$view->addChild($blockView,'block_'.$block->id);
+					$view->addChild($blockView);
 				}
 				unset($block);
 			}

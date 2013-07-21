@@ -33,8 +33,9 @@ class Main extends \Zend\Mvc\Controller\AbstractActionController{
 		$savedUrl=null;
 		$form=$this->getServiceLocator()->get('templateForm');
 		
-		foreach($form as $field){
-			print_r($field);
+		$blocks=$this-getServiceLocator()->get('blockMapper')->get();
+		if($blocks!=null&&!is_array($blocks)){
+			$blocks=array($blocks);
 		}
 		
 		if($this->getRequest()->isPost()){
@@ -46,7 +47,7 @@ class Main extends \Zend\Mvc\Controller\AbstractActionController{
 			$form->get('text')->setValue(file_get_contents(__DIR__.'/../../../view/'.$_tp.'.phtml'));
 		}
 		
-		return array('form'=>$form,'saved_url'=>$savedUrl);
+		return array('form'=>$form,'saved_url'=>$savedUrl,'blocks'=>$blocks);
 	}
 }
 ?>

@@ -7,5 +7,8 @@ print_r($res);
 echo '<br><br>';
 echo str_replace('{:id}',2,'kldas{:id}mkdmsa {:id} ');*/
 
-echo preg_replace('"[A-z0-9_-]+\\\"i','','YOBA\YOBA1\YOBA2');
+//echo preg_replace('"[A-z0-9_-]+\\\"i','','YOBA\YOBA1\YOBA2');
+if(preg_match('"^block_[0-9]+$"i','block_10')){
+	echo 'YES';
+}
 ?>

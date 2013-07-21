@@ -3,7 +3,8 @@ return array(
 	'controllers'=>array(
 		'invokables'=>array(
 			'Adminpanel\Controller\Main'=>'Adminpanel\Controller\Main',
-			'Adminpanel\Controller\Block'=>'Adminpanel\Controller\Block'
+			'Adminpanel\Controller\Block'=>'Adminpanel\Controller\Block',
+			'Adminpanel\Controller\Page'=>'Adminpanel\Controller\Page'
 		),
 	),
 	
@@ -23,7 +24,7 @@ return array(
 					'seg'=>array(
 						'type'=>'segment',
 						'options'=>array(
-							'route'=>':controller[/][:action][/][:id]',
+							'route'=>':controller[/:action[/:id]]',
 							'defaults'=>array(
 								'__NAMESPACE__'=>'Adminpanel\Controller',
 								'action'=>'menu',
@@ -39,6 +40,9 @@ return array(
 	'view_manager'=>array(
 		'template_path_stack'=>array(
 			'adminpanel'=>__DIR__.'/../view',
+		),
+		'template_map'=>array(
+			'layout/main'=>__DIR__.'/../view/adminpanel/page-layout.phtml',
 		),
 	),
 	'view_helpers'=>array(

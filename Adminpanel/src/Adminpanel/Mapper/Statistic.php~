@@ -2,16 +2,16 @@
 namespace Adminpanel\Mapper;
 
 class tatistic extends \AMH\Mapper\Mapper{
-	public function __construct(\PDO $pdo){
+	public function __construct(\PDO $pdo,array $opt=array()){
 		$this->reqTables=array(
-			'create table  stat(
+			'create table stat(
 				page_id int not null,
 				ip char(45) not null,
 				date date not null,
 				time time not null
-			)engine=myisam default charset=utf8'.
+			)engine=myisam default charset=utf8',
 		);
-		parent::__construct($pdo);
+		parent::__construct($pdo,$options);
 	}
 	
 	protected function dbSelect($filter){
@@ -33,19 +33,20 @@ class tatistic extends \AMH\Mapper\Mapper{
 			$sth=$this->pdo->prepare($query.$where);
 			$vals=array_values($filter);
 			foreach($vals as $ind=>$val){
-				$sth->bindParam($ind,$val);
+				$sth->bindValue($ind,$val);
 			}
-			return $sth->execute();
+			$sth->execute();
+			return $sth;
 		}
 		return $this->pdo->query($query);
 	}
 	
 	protected function dbInsert($item){
 		$sth=$this->pdo->prepare('insert into stat values (?,?,?,?)');
-		$sth->bindParam(1,$item->page_id);
-		$sth->bindParam(2,$item->ip);
-		$sth->bindParam(3,$item->date);
-		$sth->bindParam(4,$item->time);
+		$sth->bindValue(1,$item->page_id);
+		$sth->bindValue(2,$item->ip);
+		$sth->bindValue(3,$item->date);
+		$sth->bindValue(4,$item->time);
 		return $sth->execute();
 	}
 	
@@ -54,7 +55,7 @@ class tatistic extends \AMH\Mapper\Mapper{
 	}
 	
 	protected function dbDelete($item){
-		$sth=$this->pdo->query('delete from stat where id='.$item->id);
+		$sth=$this->pdo->query('delete from stat where page_id=? and ip=? and date=? and time=?');
 	}
 }
 ?>

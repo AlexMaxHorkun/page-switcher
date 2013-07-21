@@ -3,7 +3,7 @@
 <h4 id="mes" style="color:green;"><?php echo $this->suc; ?></h4>
 <?php if($this->sucUrl) { ?>
 <script>
-	setTimeout(function(){ window.location="<?php echo $this->url($this->sucUrl); ?>";},2500);
+	//setTimeout(function(){ window.location="<?php echo $this->sucUrl; ?>";},2500);
 </script>
 <?php }} else { ?>
 
