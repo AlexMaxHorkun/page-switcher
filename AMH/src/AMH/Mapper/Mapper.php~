@@ -7,12 +7,12 @@ abstract class Mapper{
 	protected $reqTables=array();
 	protected $items=null;
 	protected $pdo;
-	private $options=array(
+	protected $options=array(
 		'getArrayOnly'=>TRUE,
 		'fieldsMap'=>array(),//ключи - название колонок, значения - названия ствойств
 		'storeLastReceived'=>FALSE,
 	);
-	private $lastUsedFilter=null;
+	protected $lastUsedFilter=null;
 	
 	abstract protected function dbSelect($filter);
 	abstract protected function dbInsert($item);
@@ -27,7 +27,7 @@ abstract class Mapper{
 			}
 			$fields[$key]=$val;
 		}
-		return new AMHModel($fields);
+		return (object)$fields;
 	}
 	
 	private function createTables(){
@@ -58,6 +58,7 @@ abstract class Mapper{
 	public function setOptions(array $options){
 		if(isset($options['getArrayOnly'])){
 			$this->options['getArrayOnly']=$options['getArrayOnly'];
+			
 		}
 		if(isset($options['fieldsMap'])&&is_array($options['fieldsMap'])){
 			$this->options['fieldsMap']=$options['fieldsMap'];
@@ -72,13 +73,8 @@ abstract class Mapper{
 			return $this->items;
 		}
 		
-		if(!$this->callbacks['selectQuery']){
-			throw new \Exception('Select query is no defined in '.__CLASS__.', cannot get models');
-			return;
-		}
-		
 		try{
-			$res=$this->pdo->query($this->callbacks['selectQuery']($filter));
+			$res=$this->dbSelect($filter);
 		}
 		catch(\PDOException $e){
 			if($e->getCode()=='42S02'){
@@ -91,13 +87,14 @@ abstract class Mapper{
 		}
 		
 		$items=array();
+		
 		$res->setFetchMode(\PDO::FETCH_ASSOC);
 		while($row=$res->fetch()){
 			$items[]=$this->fetch($row);
 		}
 		
-		if(count($items)==1&&!$this->options['getArrayOnly']){
-				$items=$items[0];
+		if((count($items)==1)&&(!$this->options['getArrayOnly'])){
+			$items=$items[0];
 		}
 		
 		if(!count($items)){
@@ -124,7 +121,7 @@ abstract class Mapper{
 		return $this->manage('Delete',$item);
 	}
 	
-	private function manage(string $action,$item){
+	private function manage($action,$item){
 		switch($action){
 		case 'Insert':
 		case 'Save':
@@ -135,13 +132,9 @@ abstract class Mapper{
 			return null;
 		}
 		
-		if(!$this->callbacks[$action.'Query']){
-			throw new \Exception($action.'Query callback isn\'t given to '.__CLASS__);
-			return FALSE;
-		}
 		try{
 			$method='db'.$action;
-			$res=$this->$method();
+			$res=$this->$method($item);
 		}
 		catch(\PDOException $e){
 			if($e->getCode()=='42S02'){
@@ -154,8 +147,11 @@ abstract class Mapper{
 		}
 		
 		if($action=='Insert'){
-			return $this->pdo->getLastInsertId();
+			return $this->pdo->lastInsertId();
 		}
+		
+		echo '<br>EVERYTHING IS OK<br>';
+		
 		return TRUE;
 	}
 }

@@ -1,0 +1,24 @@
+<h3><?php echo $this->form->getLabel(); ?></h3>
+<?php if($this->suc) { ?>
+<h4 id="mes" style="color:green;"><?php echo $this->suc; ?></h4>
+<?php if($this->sucUrl) { ?>
+<script>
+	setTimeout(function(){ window.location="<?php echo $this->url($this->sucUrl); ?>";},2500);
+</script>
+<?php }} else { ?>
+
+<?php if($this->err) { ?>
+<h4><?php echo $this->err; ?></h4>
+<?php } ?>
+
+<?php
+$this->form->prepare();
+echo $this->form()->openTag($this->form);
+foreach($this->form as $field){
+	if(!($field instanceof Zend\Form\Element\Hidden||$field instanceof Zend\Form\Element\Submit))
+		echo $this->formLabel($field);
+	echo $this->formElement($field).'<br>';
+}
+echo $this->form()->closeTag();
+?>
+<?php } ?>

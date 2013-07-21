@@ -1,0 +1,24 @@
+<h3>Удаление</h3>
+<?php if($this->suc) { ?>
+<h4 id="mes" style="color:green;"><?php echo $this->suc; ?></h4>
+<?php if($this->sucUrl) { ?>
+<script>
+	setTimeout(function(){ window.location="<?php echo $this->url($this->sucUrl); ?>";},2500);
+</script>
+<?php }} else { ?>
+
+<?php if($this->err) { ?>
+<h4><?php echo $this->err; ?></h4>
+<?php if($this->sucUrl) { ?>
+<script>
+	setTimeout(function(){ window.location="<?php echo $this->url($this->sucUrl); ?>";},4500);
+</script>
+<?php }} else{?>
+<h5>Действительно удалить <?php echo $this->model; ?></h5>
+<form action="" method="post">
+	<input type="submit" name="submit" value="Да"> 
+	&nbsp; 
+	<input type="button" value="Нет" onclick="window.location='<?php echo $this->sucUrl; ?>';"
+</form>
+
+<?php }} ?>

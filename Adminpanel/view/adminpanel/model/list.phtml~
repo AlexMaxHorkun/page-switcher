@@ -1,0 +1,33 @@
+<?php if((!$this->models)||(is_array($this->models)&&!count($this->models))) {?>
+<h4><?php echo $this->noDataMes; ?></h4>
+<?php } else { ?>
+
+<table>
+	<thead>
+		<tr>
+			<?php foreach($this->cols as $col) { ?>
+			<th><?php echo $col; ?></th>
+			<?php } ?>
+		</tr>
+	</thead>
+	<tbody>
+	<?php foreach($this->models as $model) ?>
+	<tr>
+		<?php for($i=0,$cc=count($this->cols);$i<$cc;$i++) { ?>
+		<td>
+		<?php
+		preg_match_all('"\{:([A-z_][A-z0-9_-]*)\}"i',$this->templates[$i],$fields,PREG_SET_ORDER);
+		$text=$this->templates[$i];
+		foreach($fields as $field){
+			$text=str_replace('{:'.$field[1].'}',$model->$field[1],$text);
+		}
+		echo $text;
+		?>
+		</td>
+		<?php } ?>
+	</tr>
+	<?php } ?>
+	</tbody>
+</table>
+
+<?php } ?>

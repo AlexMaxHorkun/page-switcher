@@ -2,7 +2,8 @@
 return array(
 	'controllers'=>array(
 		'invokables'=>array(
-			'Adminpanel\Controller\Main'=>'Adminpanel\Controller\MainController'
+			'Adminpanel\Controller\Main'=>'Adminpanel\Controller\Main',
+			'Adminpanel\Controller\Block'=>'Adminpanel\Controller\Block'
 		),
 	),
 	
@@ -22,10 +23,11 @@ return array(
 					'seg'=>array(
 						'type'=>'segment',
 						'options'=>array(
-							'route'=>':controller[/][:action][:id]',
+							'route'=>':controller[/][:action][/][:id]',
 							'defaults'=>array(
 								'__NAMESPACE__'=>'Adminpanel\Controller',
 								'action'=>'menu',
+								'id'=>'0',
 							),
 						),
 					),
@@ -37,6 +39,11 @@ return array(
 	'view_manager'=>array(
 		'template_path_stack'=>array(
 			'adminpanel'=>__DIR__.'/../view',
+		),
+	),
+	'view_helpers'=>array(
+		'invokables'=>array(
+			'rMessage'=>'AMH\ViewHelper\MesNredirect',
 		),
 	),
 );

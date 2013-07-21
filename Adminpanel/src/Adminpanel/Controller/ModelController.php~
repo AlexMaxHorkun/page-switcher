@@ -1,0 +1,163 @@
+<?php
+namespace Adminpanel\Controller;
+
+use \Zend\View\Model\ViewModel as View;
+
+abstract class ModelController extends \Zend\Mvc\Controller\AbstractActionController{
+	abstract protected function getListColumns();
+	abstract protected function getColumnTemplates();
+	abstract protected function getModelList();
+	abstract protected function getModel();
+	abstract protected function addProcess($form);
+	abstract protected function editProcess($form);
+	abstract protected function deleteProcess($model);
+	
+	protected function getSuccessUrl($action){
+		return null;
+	}
+	
+	protected $successUrls=array();
+	
+	protected $messages=array(
+		'list'=>array(
+			'no_data'=>'Список пуст',
+		),
+		'add'=>array(
+			'success'=>'Добавлено',
+			'error'=>'Не удалось добавить, проверте правильность заполнения формы',
+		),
+		'edit'=>array(
+			'success'=>'Сохранено',
+			'error'=>'Не удалось сохранить, проверте правильность заполнения формы',
+		),
+		'delete'=>array(
+			'success'=>'Удалено',
+			'error'=>'Не удалось удалить',
+		),
+	);
+	
+	protected function invalidModelRequested(){
+		$view=new View();
+		$view->setTemplate('adminpanel/model/invalid-model');
+		return $view;
+	}
+	
+	protected function getForm($type){
+		$formName=strtolower(preg_replace('"[A-z0-9_-]+\\\"i','',get_class($this)));
+		$formName.=mb_convert_case($type, MB_CASE_TITLE, "UTF-8").'Form';
+		return $this->getServiceLocator()->get($formName);
+	}
+	
+	protected function checkForm(&$form){
+		if(!$this->request->isPost()){
+			return null;
+		}
+		
+		$form->bind($this->request->getPost());
+		return $form->isValid();
+	}
+	
+	public function listAction(){
+		$cols=$this->getListColumns();
+		$colTemplates=$this->getColumnTemplates();
+		$view=new View(array('cols'=>$cols,'templates'=>$colTemplates,'models'=>$this->getModelList(),'noDataMes'=>$this->messages['list']['no_data']));
+		$view->setTemplate('adminpanel/model/list');
+		return $view;
+	}
+	
+	public function addAction(){
+		$form=$this->getForm('add');
+		$errorMes=null;
+		$successMes=null;
+		$sucUrl=$this->getSuccessUrl('add');
+		
+		$fc=$this->checkForm($form);
+		if($fc===TRUE){
+			$res=$this->addProcess($form->getData());
+				if($res===TRUE){
+					$successMes=$this->messages['add']['success'];
+				}
+				else
+					if($res===FALSE){
+						$errorMes=$this->messages['add']['error'];
+					}
+					else
+						if($res!==null)
+							return $res;
+		}
+		else
+			if($fc===FALSE){
+				$errorMes=$this->messages['add']['error'];
+			}
+
+		$view=new View(array('form'=>$form,'suc'=>$successMes,'err'=>$errorMes,'sucUrl'=>$sucUrl));
+		$view->setTemplate('adminpanel/model/add');
+		return $view;
+	}
+	
+	public function editAction(){
+		$form=$this->getForm('edit');
+		$model=$this->getModel();
+		$sucUrl=$this->getSuccessUrl('edit');
+		
+		if(!$model){
+			return $this->invalidModelRequested();
+		}
+		if($model instanceof \AMH\Model\Model){
+			$form->setHydrator(new \AMH\Hydrator\Model);
+		}
+		$form->bind($model);
+		unset($model);
+		$errorMes=null;
+		$successMes=null;
+		
+		$fc=$this->checkForm($form);
+		if($fc===TRUE){
+			$res=$this->editProcess($form->getData(\Zend\Form\FormInterface::VALUES_AS_ARRAY));
+				if($res===TRUE){
+					$successMes=$this->messages['edit']['success'];
+				}
+				else
+					if($res===FALSE){
+						$errorMes=$this->messages['edit']['error'];
+					}
+					else{
+						return $res;
+					}
+		}
+		else
+			if($fc===FALSE){
+				$errorMes=$this->messages['edit']['error'];
+			}
+		
+		$view=new View(array('form'=>$form,'suc'=>$successMes,'sucUrl'=>$sucUrl,'err'=>$errorMes));
+		$view->setTemplate('adminpanel/model/add');
+		return $view;
+	}
+	
+	public function deleteAction(){
+		$model=$this->getModel();
+		$sucUrl=$this->getSuccessUrl('delete');
+		$successMes=null;
+		$errorMes=null;
+		
+		if($this->request->isPost()){
+			$res=$this->deleteProcess($model);
+			if($res===TRUE){
+					$successMes=$this->messages['delete']['success'];
+				}
+				else
+					if($res===FALSE){
+						$errorMes=$this->messages['delete']['error'];
+					}
+					else{
+						return $res;
+					}
+		}
+		
+		$view=new View(array('model'=>$model,'suc'=>$suc,'sucUrl'=>$sucUrl,'err'=>$errorMes));
+		$view->setTemplate('adminpanel/model/delete');
+		return $view;
+	}
+}
+?>

@@ -1,0 +1,6 @@
+<div class="navi">
+	<?php for($i=0;$i<count($this->links);$i++){ ?>
+	<?php if($i>0) { ?>&gt;&gt;<?php } ?>
+	<a href="<?php echo $this->url($this->links[$i]->href[0],$this->links[$i]->href[1]); ?>"><?php echo $this->links[$i]->title; ?></a> 
+	<?php } ?>
+</div>

@@ -8,5 +8,9 @@ class Block extends AMHModel{
 		$this->addField(array('name'=>'id','set'=>AMHModel::FIELD_SET_ONLYINCONSTRUCTOR,'type'=>'int'));
 		$this->addField(array('name'=>'name','set'=>AMHModel::FIELD_SET_ONLYINCONSTRUCTOR,'type'=>'string'));
 	}
+	
+	public function __toString(){
+		return $this->name;
+	}
 }
 ?>

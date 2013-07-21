@@ -1,0 +1,17 @@
+<h3>Редактирование главного шаблона</h3>
+<?php if($this->saved_url) { //если сохранено - вывести сообщение?>
+<h4 id="mes" style="color:green;">Сохранено</h4>
+<script>
+	setTimeout(function(){ window.location="<?php echo $this->url($this->saved_url); ?>";},2500);
+</script>
+<?php } else { //если нет - вывести форму?>
+<?php
+$this->form->prepare();
+echo $this->form()->openTag($this->form);
+echo $this->formTextarea($this->form->get('text')); 
+?>
+<br>
+<?php
+echo $this->formSubmit($this->form->get('submit'));
+echo $this->form()->closeTag();
+} ?>
