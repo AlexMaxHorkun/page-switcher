@@ -129,8 +129,20 @@ class Page extends ModelController{
 		}
 		if($stat){
 			$st=array();
+			$pages=$this->getServiceLocator()->get('pageMapper')->get();
+			if($pages&&(!is_array($pages)))
+				$pages=array($pages);
+			$pgs=array();
+			foreach($pages as $pg){
+				$pgs[$pg->id]=$pg;
+			}
+			unset($pages);
 			foreach($stat as $s){
-				$st[$s->date][$s->ip][]=$s->time;
+				$st[$s->date][$s->ip][]=array(
+					'time'=>$s->time,
+					'ref'=>$s->referer,
+					'refPage'=>(($s->refererPageId)? $pgs[$s->refererPageId]:null),
+				);
 			}
 			$stat=$st;
 		}

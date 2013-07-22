@@ -48,14 +48,35 @@ class Module{
 			function($e){
 				$page=$e->getParam('page');
 				if($page){
-					$e->getTarget()->getServiceLocator()->get('statMapper')->insert(
-						new \Adminpanel\Model\Statistic(array(
-							'pageId'=>$page->id,
-							'ip'=>$_SERVER['REMOTE_ADDR'],
-							'date'=>date('Y-m-d'),
-							'time'=>date('H:i'),
-						))
-					);
+					$stat=new \Adminpanel\Model\Statistic();
+					$stat->pageId=$page->id;
+					$stat->ip=$_SERVER['REMOTE_ADDR'];
+					$stat->date=date('Y-m-d');
+					$stat->time=date('H:i');
+					$stat->referer=((isset($_SERVER['HTTP_REFERER']))? $_SERVER['HTTP_REFERER']:null);
+					
+					
+					if($stat->referer){
+						$ref=$stat->referer;
+						if(preg_match('"^http.*://"i',$ref)){
+							$ref=preg_replace('"^http.*://"i','',$ref);
+						}
+						
+						if(mb_strpos($ref,$_SERVER['SERVER_NAME'])===0){
+							$ref=preg_replace('"\?.+"i','',$ref);
+							$ref=str_replace($_SERVER['SERVER_NAME'],'',$ref);
+							$ref=preg_replace('"^/"i','',$ref);
+							$pg=$e->getTarget()->getServiceLocator()->get('pageMapper')->get(array('route'=>$ref));
+							if($pg){
+								if(is_array($pg)){
+									$pg=$pg[0];
+								}
+								$stat->refererPageId=$pg->id;
+							}
+						}
+					}
+					
+					$e->getTarget()->getServiceLocator()->get('statMapper')->insert($stat);
 				}
 			}
 		);
@@ -79,6 +100,7 @@ class Module{
 						'getArrayOnly'=>FALSE,
 						'fieldsMap'=>array(
 							'page_id'=>'pageId',
+							'referer_page_id'=>'refererPageId',
 						),
 					));
 				},

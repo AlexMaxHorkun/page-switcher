@@ -15,7 +15,6 @@ class Page extends \AMH\Mapper\Mapper{
 	}
 	
 	protected function dbSelect($filter){
-		print_r($filter);
 		$query='select * from pages';
 		if(count($filter)){
 			$where='';
@@ -32,6 +31,7 @@ class Page extends \AMH\Mapper\Mapper{
 				}
 			}
 			$sth=$this->pdo->prepare($query.$where);
+			echo $query.$where.' '.__LINE__.' '.__FILE__.'<br>';
 			$vals=array_values($filter);
 			foreach($vals as $ind=>$val){
 				$sth->bindValue($ind+1,$val);

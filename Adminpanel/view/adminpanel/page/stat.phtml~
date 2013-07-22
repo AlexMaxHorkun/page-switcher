@@ -1,23 +1,41 @@
 <div class="stat-window">
-	<h4>Страница "<?php echo $this->page; ?>"</h4><br>
+	<h3>Страница "<?php echo $this->page; ?>"</h3><br>
 	<?php if(!$this->stat) { ?>
 	<h5>Статистика пуста для этой страницы</h5>
 	<?php } else{ ?>
 	
-	<?php foreach($this->stat as $date=>$val) { ?>
-	<div class="stat-record">
-	<h4><?php $dt=mb_split('\D',$date); echo $dt[2].'.'.$dt[1].'.'.$dt[0]; ?> &nbsp; <?php echo '('.count($val).') разных IP'; ?></h4>
-		<?php foreach($val as $ip=>$val1){ ?>
-		<div>
-			<h5><?php echo $ip.' ('.count($val1).') раз'; ?></h5>
-			<?php foreach($val1 as $time) { ?>
-			<?php echo $time; ?>
-			<br>
+	<table>
+		<thead>
+			<tr>
+				<th>Дата</th><th>IP</th><th>Время</th><th>Откуда (страница на этом сайте)</th><th>Откуда - адресс</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php foreach($this->stat as $date=>$ips){ ?>
+			<tr>
+				<td <?php 
+					$rowspan=0;
+					foreach($ips as $ip){
+						$rowspan+=count($ip);
+					}
+					if($rowspan) echo 'rowspan="'.$rowspan.'" ';
+					unset($rowspan);	
+				?>><?php $dt=mb_split('\D',$date); echo $dt[2].'.'.$dt[1].'.'.$dt[0]; unset($dt); ?></td>
+				<?php foreach($ips as $ip=>$vals) {?>
+				<td rowspan="<?php echo count($this->stat[$date][$ip]); ?>"><?php echo $ip; ?></td>
+				<?php for($i=0,$rc=count($this->stat[$date][$ip]);$i<$rc;$i++){ ?>
+				<?php if($i){ ?>
+			<tr>
+				<?php } ?>
+				<td><?php echo $vals[$i]['time']; ?></td>
+				<td><?php if($vals[$i]['refPage']) echo 'Стр. "'.$vals[$i]['refPage'].'"'; else { ?> - <?php } ?></td>
+				<td></td>
+				<?php } ?>
+				<?php } ?>
+			</tr>
 			<?php } ?>
-		</div>
-		<?php } ?>
-	</div>
-	<?php } ?>
+		</tbody>
+	</table>
 	
 	<?php } ?>
 </div>
