@@ -19,6 +19,7 @@ class IndexController extends AbstractController
 	public function getPage(){
 		if($this->page==NULL){
 			$route=$this->getEvent()->getRouteMatch()->getParam('page');
+			echo gettype($route);
 			$page=$this->getServiceLocator()->get('pageMapper')->get(array('route'=>$route));
 			if($page===null||(is_array($page)&&!count($page))){
 				$this->page=FALSE;
@@ -28,7 +29,7 @@ class IndexController extends AbstractController
 			}
 		}
 		
-		$this->getEventManager()->trigger('got_page',$this);
+		$this->getEventManager()->trigger('got_page',$this,array('page'=>$this->page));
 		
 		return $this->page;
 	}

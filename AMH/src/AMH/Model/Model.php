@@ -14,7 +14,8 @@ class Model{
 		$this->preConstruct();
 		foreach($fields as $field=>$val){
 			if(isset($this->fields[$field])){
-				$this->$field=$val;
+				$this->fields[$field]['value']=$val;
+				$this->fields[$field]['wasSet']=TRUE;
 			}
 		}
 	}

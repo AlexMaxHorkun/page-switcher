@@ -14,7 +14,7 @@ class Model{
 		$this->preConstruct();
 		foreach($fields as $field=>$val){
 			if(isset($this->fields[$field])){
-				$this->$field=$val;
+				$this->fields[$field]['value']=$val;
 			}
 		}
 	}
@@ -106,7 +106,8 @@ class Model{
 			$val=$this->fields[$name]['setCallback'][0]($val);
 		}
 		$this->fields[$name]['value']=$val;
-		$this->fields[$name]['wasSet']=TRUE;
+		if(!$this->fields[$name]['wasSet'])
+			$this->fields[$name]['wasSet']=TRUE;
 	}
 	
 	public function __isset($name){

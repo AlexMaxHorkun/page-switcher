@@ -19,6 +19,9 @@ class IndexController extends AbstractController
 	public function getPage(){
 		if($this->page==NULL){
 			$route=$this->getEvent()->getRouteMatch()->getParam('page');
+			if($route===NULL){
+				$route='';
+			}
 			$page=$this->getServiceLocator()->get('pageMapper')->get(array('route'=>$route));
 			if($page===null||(is_array($page)&&!count($page))){
 				$this->page=FALSE;
