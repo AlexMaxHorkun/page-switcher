@@ -2,7 +2,7 @@
 namespace AMH\File;
 
 class File{
-public static function self::deleteDirectory($dir) { 
+public static function deleteDirectory($dir) { 
     if (!file_exists($dir)) return true; 
     if (!is_dir($dir) || is_link($dir)) return unlink($dir); 
         foreach (scandir($dir) as $item) { 
