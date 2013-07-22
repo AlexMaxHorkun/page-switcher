@@ -39,13 +39,13 @@ abstract class Mapper{
 				unset($query);
 			}
 			catch(\PDOException $e){
-				throw new \Exception('Invalid table queries given to '.__CLASS__);
+				throw new \Exception('Invalid table queries given to '.get_class($this));
 				return FALSE;
 			}
 			return TRUE;
 		}
 		else{
-			throw new \Exception(__CLASS__.' - Cannot use database, table(s) does not exist and no queries to create them defined');
+			throw new \Exception(get_class($this).' - Cannot use database, table(s) does not exist and no queries to create them defined');
 			return FALSE;
 		}
 	}
@@ -128,7 +128,7 @@ abstract class Mapper{
 		case 'Delete':
 			break;
 		default:
-			throw new \Exception('Wrong "action" parametr given to '.__CLASS__.'::'.__FUNCTION__);
+			throw new \Exception('Wrong "action" parametr given to '.get_class($this).'::'.__FUNCTION__);
 			return null;
 		}
 		

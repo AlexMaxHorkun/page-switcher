@@ -150,8 +150,6 @@ abstract class Mapper{
 			return $this->pdo->lastInsertId();
 		}
 		
-		echo '<br>EVERYTHING IS OK<br>';
-		
 		return TRUE;
 	}
 }
