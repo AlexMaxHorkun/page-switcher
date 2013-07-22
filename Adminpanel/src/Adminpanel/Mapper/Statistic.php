@@ -1,7 +1,7 @@
 <?php
 namespace Adminpanel\Mapper;
 
-class tatistic extends \AMH\Mapper\Mapper{
+class Statistic extends \AMH\Mapper\Mapper{
 	public function __construct(\PDO $pdo,array $opt=array()){
 		$this->reqTables=array(
 			'create table stat(
@@ -11,7 +11,7 @@ class tatistic extends \AMH\Mapper\Mapper{
 				time time not null
 			)engine=myisam default charset=utf8',
 		);
-		parent::__construct($pdo,$options);
+		parent::__construct($pdo,$opt);
 	}
 	
 	protected function dbSelect($filter){
@@ -20,6 +20,7 @@ class tatistic extends \AMH\Mapper\Mapper{
 			$where='';
 			foreach($filter as $col=>$val){
 				if(in_array($col,$this->options['fieldsMap'])){
+					
 					$col=array_search($col,$this->options['fieldsMap']);
 				}
 				
@@ -43,7 +44,7 @@ class tatistic extends \AMH\Mapper\Mapper{
 	
 	protected function dbInsert($item){
 		$sth=$this->pdo->prepare('insert into stat values (?,?,?,?)');
-		$sth->bindValue(1,$item->page_id);
+		$sth->bindValue(1,$item->pageId);
 		$sth->bindValue(2,$item->ip);
 		$sth->bindValue(3,$item->date);
 		$sth->bindValue(4,$item->time);
@@ -56,6 +57,12 @@ class tatistic extends \AMH\Mapper\Mapper{
 	
 	protected function dbDelete($item){
 		$sth=$this->pdo->query('delete from stat where page_id=? and ip=? and date=? and time=?');
+	}
+	
+	protected function fetch($row){
+		$params=(array)$row;
+		$params['pageId']=$params['page_id'];
+		return new \Adminpanel\Model\Statistic($params);
 	}
 }
 ?>

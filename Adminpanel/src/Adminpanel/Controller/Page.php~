@@ -77,10 +77,10 @@ class Page extends ModelController{
 	protected function getColumnTemplates(){
 		return array(
 			'"{:name}"',
-			'<a href="'.$this->url()->fromRoute('adminpanel/seg',array('controller'=>'page','action'=>'stat')).'{:id}">Посмотреть</a>',
-			'<a href="'.$this->url()->fromRoute('adminpanel/seg',array('controller'=>'page','action'=>'edit')).'{:id}">Изменить</a> 
+			'<a href="'.$this->url()->fromRoute('adminpanel/seg',array('controller'=>'page','action'=>'stat')).'/{:id}">Посмотреть</a>',
+			'<a href="'.$this->url()->fromRoute('adminpanel/seg',array('controller'=>'page','action'=>'edit')).'/{:id}">Изменить</a> 
 			&nbsp; 
-			<a href="'.$this->url()->fromRoute('adminpanel/seg',array('controller'=>'page','action'=>'delete')).'{:id}">Удалить</a>',
+			<a href="'.$this->url()->fromRoute('adminpanel/seg',array('controller'=>'page','action'=>'delete')).'/{:id}">Удалить</a>',
 		);
 	}
 	
@@ -116,6 +116,25 @@ class Page extends ModelController{
 		)));
 		$view->setTemplate('adminpanel/menu');
 		return $view;
+	}
+	
+	public function statAction(){
+		$page=$this->getModel();
+		if(!$page){
+			return $this->invalidModelRequested();
+		}
+		$stat=$this->getServiceLocator()->get('statMapper')->get(array('pageId'=$page->id));
+		if($stat&&(!is_array($stat))){
+			$stat=array($stat);
+		}
+		if($stat){
+			$st=array();
+			foreach($stat as $s){
+				$st[$s->date][$s->ip][]=$s->time;
+			}
+			$stat=$st;
+		}
+		return array('stat'=>$stat,'page'=>$page);
 	}
 }
 ?>

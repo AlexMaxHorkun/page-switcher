@@ -41,6 +41,24 @@ class Module{
 				}
 			}
 		);
+		
+		$me->getApplication()->getEventManager()->getSharedManager()->attach(
+			'Application\Controller\IndexController',
+			'got_page',
+			function($e){
+				$page=$e->getParam('page');
+				if($page){
+					$e->getTarget()->getServiceLocator()->get('statMapper')->insert(
+						new \Adminpanel\Model\Statistic(array(
+							'pageId'=>$page->id,
+							'ip'=>$_SERVER['REMOTE_ADDR'],
+							'date'=>date('Y-m-d'),
+							'time'=>date('H:i'),
+						))
+					);
+				}
+			}
+		);
 	}
 	
 	function getConfig(){
@@ -59,7 +77,7 @@ class Module{
 				'statMapper'=>function($sm){
 					return new Mapper\Statistic($sm->get('pdo'),array(
 						'getArrayOnly'=>FALSE,
-						'fieldsMapper'=>array(
+						'fieldsMap'=>array(
 							'page_id'=>'pageId',
 						),
 					));

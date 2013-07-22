@@ -117,5 +117,24 @@ class Page extends ModelController{
 		$view->setTemplate('adminpanel/menu');
 		return $view;
 	}
+	
+	public function statAction(){
+		$page=$this->getModel();
+		if(!$page){
+			return $this->invalidModelRequested();
+		}
+		$stat=$this->getServiceLocator()->get('statMapper')->get(array('pageId'=>$page->id));
+		if($stat&&(!is_array($stat))){
+			$stat=array($stat);
+		}
+		if($stat){
+			$st=array();
+			foreach($stat as $s){
+				$st[$s->date][$s->ip][]=$s->time;
+			}
+			$stat=$st;
+		}
+		return array('stat'=>$stat,'page'=>$page);
+	}
 }
 ?>

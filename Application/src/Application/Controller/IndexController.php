@@ -16,7 +16,7 @@ class IndexController extends AbstractController
 {
 	protected $page=null;	
 	
-	protected function getPage(){
+	public function getPage(){
 		if($this->page==NULL){
 			$route=$this->getEvent()->getRouteMatch()->getParam('page');
 			$page=$this->getServiceLocator()->get('pageMapper')->get(array('route'=>$route));
@@ -28,7 +28,7 @@ class IndexController extends AbstractController
 			}
 		}
 		
-		$this->getEventManager()->trigger('got_page',$this);
+		$this->getEventManager()->trigger('got_page',$this,array('page'=>$this->page));
 		
 		return $this->page;
 	}
@@ -49,9 +49,11 @@ class IndexController extends AbstractController
 					$blocks=array($blocks);
 				}
 				foreach($blocks as $block){
-					$blockView=new View();
-					$blockView->setTemplate('pages/page_'.$this->page->id.'/block_'.$block->id);
-					$view->addChild($blockView,'block_'.$block->id);
+					if(file_exists(__DIR__.'/../../../view/pages/page_'.$this->page->id.'/block_'.$block->id.'.phtml')){
+						$blockView=new View();
+						$blockView->setTemplate('pages/page_'.$this->page->id.'/block_'.$block->id);
+						$view->addChild($blockView,'block_'.$block->id);
+					}
 				}
 				unset($block);
 			}

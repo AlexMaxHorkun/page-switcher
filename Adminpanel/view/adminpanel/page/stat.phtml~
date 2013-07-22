@@ -1,0 +1,23 @@
+<div class="stat-window">
+	<h4>Страница "<?php echo $this->page; ?>"</h4><br>
+	<?php if(!$this->stat) { ?>
+	<h5>Статистика пуста для этой страницы</h5>
+	<?php } else{ ?>
+	
+	<?php foreach($this->stat as $date=>$val) { ?>
+	<div class="stat-record">
+	<h4><?php $dt=mb_split('\D',$date); echo $dt[2].'.'.$dt[1].'.'.$dt[0]; ?> &nbsp; <?php echo '('.count($val).') разных IP'; ?></h4>
+		<?php foreach($val as $ip=>$val1){ ?>
+		<div>
+			<h5><?php echo $ip.' ('.count($val1).') раз'; ?></h5>
+			<?php foreach($val1 as $time) { ?>
+			<?php echo $time; ?>
+			<br>
+			<?php } ?>
+		</div>
+		<?php } ?>
+	</div>
+	<?php } ?>
+	
+	<?php } ?>
+</div>
